@@ -8,14 +8,14 @@ pipeline_bad:
 		; Loop setup (cdecl -> eax, ecx & edx are caller saved)
 		XOR ecx, ecx
 		SUB esp, 4
-		MOV DWORD PTR[esp+0], ecx
+		MOV DWORD[esp+0], ecx
 
 		; Main functionality executed in loop
 	L_pipeline_bad:
-		ADD DWORD PTR[esp+0], 12345678h
-		ADD DWORD PTR[esp+0], 12345678h
-		ADD DWORD PTR[esp+0], 12345678h
-		ADD DWORD PTR[esp+0], 12345678h
+		ADD DWORD[esp+0], 12345678h
+		ADD DWORD[esp+0], 12345678h
+		ADD DWORD[esp+0], 12345678h
+		ADD DWORD[esp+0], 12345678h
 
 		; Loop logic
 		DEC ecx
@@ -27,17 +27,17 @@ pipeline_good:
 		; Loop setup (cdecl -> eax, ecx & edx are caller saved)
 		XOR ecx, ecx
 		SUB esp, 10h
-		MOV DWORD PTR[esp+0], ecx
-		MOV DWORD PTR[esp+4], ecx
-		MOV DWORD PTR[esp+8], ecx
-		MOV DWORD PTR[esp+12], ecx
+		MOV DWORD[esp+0], ecx
+		MOV DWORD[esp+4], ecx
+		MOV DWORD[esp+8], ecx
+		MOV DWORD[esp+12], ecx
 
 		; Main functionality executed in loop
 	L_pipeline_good:
-		ADD DWORD PTR[esp+0], 12345678h
-		ADD DWORD PTR[esp+4], 12345678h
-		ADD DWORD PTR[esp+8], 12345678h
-		ADD DWORD PTR[esp+12], 12345678h
+		ADD DWORD[esp+0], 12345678h
+		ADD DWORD[esp+4], 12345678h
+		ADD DWORD[esp+8], 12345678h
+		ADD DWORD[esp+12], 12345678h
 
 		; Loop logic
 		DEC ecx
