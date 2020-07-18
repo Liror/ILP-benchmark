@@ -9,10 +9,10 @@
 #ifdef __cplusplus
 	extern "C" {
 #endif
-	void __cdecl pipeline_data_bad_small(void);
-	void __cdecl pipeline_data_good_small(void);
-	void __cdecl loop_example_bad(void);
-	void __cdecl loop_example_good(void);
+	void __cdecl pipeline_data_bad(void);
+	void __cdecl pipeline_data_good(void);
+	void __cdecl loop_example_always(void);
+	void __cdecl loop_example_sometimes(void);
 #ifdef __cplusplus
 	}
 #endif
@@ -41,35 +41,42 @@ int main(int argc, char* argv[])
 	
 	// Branch prediction examples
 	timer.Reset();
-	loop_example_good();
+	loop_example_always();
 	__int64 t0 = timer();
 
 	timer.Reset();
-	loop_example_bad();
+	loop_example_sometimes();
 	__int64 t1 = timer();
 	
-	printf("Good loop execution time:   %lld ms\n", t0);
-	printf("Bad loop execution time:    %lld ms\n", t1);
-	printf("Sometimes these two loops perform similarly well, in that case the branch predictor worked flawlessly.\nThis does not happen in the more thorough program benchmark...\n");
+	printf("Always jumping loop execution time:    %lld ms\n", t0);
+	printf("Sometimes jumping loop execution time: %lld ms\n", t1);
 
 	// Pipelining examples
 	timer.Reset();
-	pipeline_data_good_small();
+	pipeline_data_good();
 	__int64 time_data0 = timer();
 
 	timer.Reset();
-	pipeline_data_bad_small();
+	pipeline_data_bad();
 	__int64 time_data1 = timer();
 	
-	printf("Pipeline data good small:   %lld ms\n", time_data0);
-	printf("Pipeline data bad small:    %lld ms\n", time_data1);
+	printf("Pipeline data good:   %lld ms\n", time_data0);
+	printf("Pipeline data bad:    %lld ms\n", time_data1);
 
 	// Restrict example
-	int b1, b2;
-	int c = 7;
-	normal(&c, &b1, &c); // when used like restricted should be used, compiler automatically optimizes additional load away
-	restricted(&c, &b1, &c); // incorrect use as variables should not be overlapping
-	printf("Expected: 9 10 9\nActual:   %d %d %d\n", b1, b2, c);
+	int a = 3, b = 5, c = 7;
+    printf("Expected: 3 5 7\nActual:   %d %d %d\n", a, b, c);
+    normal(&a, &b, &c);
+    printf("Expected: 8 8 7\nActual:   %d %d %d\n", a, b, c);
+    c = 5;
+    restricted(&a, &b, &c);
+    printf("Expected: 6 6 5\nActual:   %d %d %d\n\n", a, b, c);
+	int p = 7;
+	printf("Expected: 7\nActual:   %d \n", p);
+	normal(&p, &p, &p);
+	printf("Expected: 9\nActual:   %d \n", p);
+	restricted(&p, &p, &p);
+	printf("Expected: 11\nActual:   %d \n", p);
 
 	return 0;
 }

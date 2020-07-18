@@ -1,0 +1,5 @@
+### For restrict example:
+gcc -m32 -O3 restrict.c -o restrict.out
+objdump -d -M intel restrict.out
+gdb restrict.out
+
